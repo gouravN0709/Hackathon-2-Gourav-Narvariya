@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-display: var(--font-sora), var(--font-dm-sans), sans-serif;
+}
+
+@theme {
+  /* 820px: sidebar ↔ bottom tab bar switch */
+  --breakpoint-md: 51.25rem;
+
+  /* surfaces */
+  --color-app: #0b0b0d;
+  --color-sidebar: #0f0f12;
+  --color-card: #151518;
+  --color-raised: #1c1c21;
+  --color-chip: #1f1f25;
+  --color-active: #23232a;
+  --color-row: #1a1a1f;
+  --color-row-hover: #26262e;
+
+  /* borders */
+  --color-line: #26262c;
+  --color-line-strong: #383841;
+  --color-line-chip: #2c2c34;
+  --color-line-active: #34343c;
+  --color-line-soft: #222228;
+  --color-line-side: #1e1e24;
+  --color-line-hover: #3a3a44;
+  --color-line-mute: #4a4a55;
+
+  /* text */
+  --color-fg: #f5f5f7;
+  --color-muted: #a1a1ad;
+  --color-soft: #d4d4dc;
+  --color-placeholder: #8a8a96;
+  --color-chip-fg: #e4e4ea;
+  --color-disabled-fg: #6e6e78;
+
+  /* lime */
+  --color-lime: #c6ff3d;
+  --color-lime-hover: #d8ff73;
+  --color-on-lime: #0b0b0d;
+  --color-lime-tint: #1e2410;
+  --color-lime-line: #2f3a12;
+  --color-lime-pill: #1a2008;
+  --color-lime-pill-line: #34410f;
+  --color-lime-deep: #10140a;
+  --color-lime-select: #12160a;
+  --color-lime-dim: #7a8f2c;
+  --color-lime-disabled: #4a5a1e;
+  --color-lime-disabled-fg: #9aa67a;
+
+  /* violet */
+  --color-violet: #a78bfa;
+  --color-violet-soft: #c4b5fd;
+  --color-violet-tint: #1a1626;
+  --color-violet-deep: #12101a;
+  --color-violet-line: #3b2f63;
+  --color-violet-strong: #5b4a99;
+  --color-violet-text: #e6e0f7;
+  --color-violet-banner: #d8d0f0;
+
+  /* amber */
+  --color-amber: #fbbf24;
+  --color-amber-line: #4a3a12;
+
+  /* error */
+  --color-danger: #ff9b9b;
+  --color-danger-line: #ff7a7a;
+  --color-danger-bg: #2a1416;
+  --color-danger-border: #5a2a2e;
+  --color-danger-deep: #1a1012;
+  --color-danger-soft: #f0c9cb;
+  --color-danger-disabled: #7a5558;
+
+  --tracking-tight-display: -0.02em;
+  --tracking-eyebrow: 0.1em;
+}
+
+@layer base {
+  html {
+    background: var(--color-app);
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--color-app);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: default;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-lime);
+    outline-offset: 2px;
+  }
+
+  input::placeholder {
+    color: var(--color-placeholder);
+  }
+
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  input[type='search']::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+}
+
+@utility ai-border {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--color-card), var(--color-card)) padding-box,
+    linear-gradient(135deg, #c6ff3d88, #8b5cf688) border-box;
+}
+
+@utility placeholder-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  border: 1px solid var(--color-line-chip);
+  background: linear-gradient(145deg, #25252c, #17171b);
+  color: var(--color-lime);
+}
+
+@utility safe-bottom {
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
+  padding-left: max(8px, env(safe-area-inset-left));
+  padding-right: max(8px, env(safe-area-inset-right));
+}
+
+@utility safe-top {
+  padding-top: max(16px, env(safe-area-inset-top));
+}
+
+@utility safe-top-nav {
+  padding-top: max(20px, env(safe-area-inset-top));
+}
+
+@media (display-mode: standalone) {
+  html,
+  body {
+    overscroll-behavior-y: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* Ensure form controls, chat messages, and editable text stay selectable */
+input,
+textarea,
+[contenteditable="true"],
+[role="log"],
+[role="log"] *,
+.chat-bubble,
+[data-selectable="true"] {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@utility animate-spin-slow {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes particleFly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
+}
