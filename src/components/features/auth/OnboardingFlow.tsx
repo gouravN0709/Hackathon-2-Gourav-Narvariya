@@ -85,7 +85,7 @@ export function OnboardingFlow() {
         patch.startWeight = nw;
         patch.goalWeight = goal === 'muscle' ? Math.round(nw + 3.6) : goal === 'fat' ? Math.round(nw - 5) : Math.round(nw);
       }
-      saveUser(patch, targets, nw);
+      saveUser({ ...patch, onboardingCompleted: true }, targets, nw);
       setPhase('done');
     }, BUILD_DELAY_MS);
   };

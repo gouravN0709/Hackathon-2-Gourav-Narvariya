@@ -7,20 +7,18 @@ import { Field, Label } from '@/components/ui/Field';
 import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { SuccessCheck } from '@/components/ui/misc';
 import { useFitStore } from '@/lib/store';
+import { requestPasswordReset, signInWithPassword, signUp } from '@/lib/auth';
 import { isEmail } from '@/lib/validation';
 
 type Mode = 'login' | 'signup';
 type FieldKey = 'name' | 'email' | 'pw' | '';
-const SUBMIT_DELAY_MS = 900;
 
 export function LoginForm() {
-  const signIn = useFitStore((s) => s.signIn);
-  const storedEmail = useFitStore((s) => s.user.email);
   const first = useFitStore((s) => s.user.first);
 
   const [mode, setMode] = useState<Mode>('login');
   const [name, setName] = useState('');
-  const [email, setEmail] = useState(storedEmail);
+  const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [terms, setTerms] = useState(false);
   const [show, setShow] = useState(false);
@@ -49,14 +47,18 @@ export function LoginForm() {
     else if (field === 'pw') document.getElementById('pw')?.focus();
   };
 
-  const forgot = () => {
+  const forgot = async () => {
+    clearMessages();
     if (!isEmail(email)) {
       fail('Enter your email above first, then tap Forgot password.', 'email');
       return;
     }
-    setErr('');
-    setBad('');
-    setInfo(`Reset link sent to ${email.trim()}. Check your inbox.`);
+    const res = await requestPasswordReset(email.trim());
+    if (res.ok) {
+      setInfo(`Reset link sent to ${email.trim()}. Check your inbox.`);
+    } else {
+      fail(res.message, '');
+    }
   };
 
   const submit = (e: FormEvent) => {
@@ -69,10 +71,24 @@ export function LoginForm() {
     if (!login && !terms) return fail('Please accept the terms to continue.', '');
     clearMessages();
     setPhase('loading');
-    timer.current = window.setTimeout(() => {
-      signIn(login ? { email: email.trim() } : { name: name.trim(), email: email.trim() });
-      setPhase('success');
-    }, SUBMIT_DELAY_MS);
+    void (async () => {
+      try {
+        const res = login
+          ? await signInWithPassword(email.trim(), pw)
+          : await signUp(name.trim(), email.trim(), pw);
+        if (!res.ok) {
+          fail(res.message, res.message.includes("don't match") ? 'pw' : '');
+          setPhase('form');
+          return;
+        }
+        // Pull the account's data into the store before the success screen.
+        await useFitStore.getState().bootstrap();
+        setPhase('success');
+      } catch {
+        fail('Could not reach the server. Check your connection and try again.', '');
+        setPhase('form');
+      }
+    })();
   };
 
   if (phase === 'success') {
@@ -210,7 +226,7 @@ export function LoginForm() {
           {phase === 'loading' ? (login ? 'Logging in…' : 'Creating account…') : login ? 'Log in' : 'Create account'}
         </Button>
       </form>
-      <p className="text-center text-[14px] text-muted">Prototype: use any valid email and a password with 8 or more characters.</p>
+      <p className="text-center text-[14px] text-muted">Use your real email and a password with 8 or more characters. Password resets work too.</p>
     </div>
   );
 }

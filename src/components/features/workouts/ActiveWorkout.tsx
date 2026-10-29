@@ -157,7 +157,7 @@ export function ActiveWorkout() {
       try {
         localStorage.removeItem('fitai.activeWorkout');
       } catch {}
-      saveSession(w.key, minutes, volume, tops);
+      saveSession(w.key, minutes, volume, tops, state.exercises);
       playSuccess();
       triggerHaptic([30, 50, 60]);
       setResult(`${setsDone} ${setsDone === 1 ? 'set' : 'sets'}, ${num(volume)} kg total volume in ${minutes} min.`);

@@ -11,9 +11,11 @@ import { Icon } from '@/components/ui/Icon';
 import { Pill } from '@/components/ui/Pill';
 import { InfoTip } from '@/components/ui/InfoTip';
 import { EmptyState, Eyebrow, NovaAvatar } from '@/components/ui/misc';
+import { showToast } from '@/components/ui/Toast';
 import { PageContainer, Stack } from '@/components/ui/Layout';
 import { MUSCLE_GROUPS } from '@/lib/data/workouts';
 import { GOAL_NAME, mmss, setLine } from '@/lib/format';
+import { createClient } from '@/lib/supabase/client';
 import { sessionsThisWeek, today, todayIndex, week, workoutExercises, type WeekDay } from '@/lib/selectors';
 import { useFitData, useFitStore } from '@/lib/store';
 import { playTick } from '@/lib/audio';
@@ -45,7 +47,30 @@ export function WorkoutsPlanner() {
   const regenerate = () => {
     if (regen === 'loading') return;
     setRegen('loading');
-    timer.current = window.setTimeout(() => setRegen('done'), REGEN_MS);
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      setRegen('done');
+      // Reload from Supabase so the chips/week view reflect the fresh plan.
+      void useFitStore.getState().bootstrap();
+    };
+    timer.current = window.setTimeout(finish, REGEN_MS);
+    void (async () => {
+      try {
+        const client = createClient();
+        const { data } = await client.auth.getUser();
+        if (!data?.user) throw new Error('NO_SESSION');
+        const { error } = await client.rpc('regenerate_plan', { p_user: data.user.id });
+        if (error) throw error;
+        finish();
+      } catch (err) {
+        window.clearTimeout(timer.current);
+        setRegen('idle');
+        showToast('Could not regenerate the plan. Try again.', 'error');
+        console.warn('[FitAI] plan regeneration failed:', err);
+      }
+    })();
   };
 
   const touchStartRef = useRef(0);

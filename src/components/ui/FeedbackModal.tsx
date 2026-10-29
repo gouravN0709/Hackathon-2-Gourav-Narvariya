@@ -8,6 +8,8 @@ import { StatusText } from '@/components/ui/Alert';
 import { showToast } from '@/components/ui/Toast';
 import { EMAIL_RE } from '@/lib/validation';
 import { cn } from '@/lib/cn';
+import { createClient } from '@/lib/supabase/client';
+import { submitFeedback } from '@/lib/data/repos/feedback';
 
 interface FeedbackModalProps {
   open: boolean;
@@ -21,8 +23,6 @@ export interface FeedbackEntry {
   email?: string;
   createdAt: string;
 }
-
-const STORAGE_KEY = 'fitai.feedback';
 
 export function FeedbackModal({ open, onClose }: FeedbackModalProps) {
   const [type, setType] = useState<'bug' | 'idea'>('bug');
@@ -44,28 +44,28 @@ export function FeedbackModal({ open, onClose }: FeedbackModalProps) {
       return;
     }
 
-    const entry: FeedbackEntry = {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-      type,
-      message: cleanMsg,
-      email: cleanEmail || undefined,
-      createdAt: new Date().toISOString(),
-    };
+    void (async () => {
+      try {
+        const client = createClient();
+        const { data } = await client.auth.getUser();
+        const sent = await submitFeedback(client, data?.user?.id ?? null, {
+          type,
+          message: cleanMsg,
+          email: cleanEmail || undefined,
+        });
+        if (!sent) throw new Error('insert failed');
+      } catch (err) {
+        console.warn('[FitAI] feedback submit failed:', err);
+        showToast('Could not send feedback. Try again.', 'error');
+        return;
+      }
 
-    try {
-      const existingRaw = window.localStorage.getItem(STORAGE_KEY);
-      const list: FeedbackEntry[] = existingRaw ? JSON.parse(existingRaw) : [];
-      list.push(entry);
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    } catch {
-      // storage unavailable: continue gracefully
-    }
-
-    showToast('Feedback submitted. Thank you for helping improve FitAI!', 'success');
-    setMessage('');
-    setEmail('');
-    setError('');
-    onClose();
+      showToast('Feedback submitted. Thank you for helping improve FitAI!', 'success');
+      setMessage('');
+      setEmail('');
+      setError('');
+      onClose();
+    })();
   };
 
   return (

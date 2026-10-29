@@ -19,6 +19,7 @@ import { PageContainer, Stack } from '@/components/ui/Layout';
 import { DIETS, EXPERIENCES, PROFILE_GOALS } from '@/lib/data/options';
 import { calcTargets, latestWeight } from '@/lib/selectors';
 import { useFitData, useFitStore } from '@/lib/store';
+import { changePassword } from '@/lib/auth';
 import { usePWA } from '@/lib/pwa/usePWA';
 import { showToast } from '@/components/ui/Toast';
 import { startAppTour } from '@/components/features/help/useTour';
@@ -38,7 +39,7 @@ export function ProfileSettings() {
   const router = useRouter();
   const s = useFitData();
   const justDeleted = useFitStore((st) => st.justDeleted);
-  const { saveUser, signOut, deleteAccount, reset } = useFitStore.getState();
+  const { saveUser, signOut, deleteAccount, reset, importFromDevice } = useFitStore.getState();
 
   const [d, setD] = useState<ProfileDraft>(() => draftFrom(useFitStore.getState()));
   const [err, setErr] = useState<{ error: string; field?: string }>({ error: '' });
@@ -52,6 +53,7 @@ export function ProfileSettings() {
   const [delOpen, setDelOpen] = useState(false);
   const [delText, setDelText] = useState('');
   const [resetDone, setResetDone] = useState(false);
+  const [importNote, setImportNote] = useState('');
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const { isStandalone, canPrompt, isIosSafari, promptInstall } = usePWA();
 
@@ -133,11 +135,19 @@ export function ProfileSettings() {
     e.preventDefault();
     if (pw1.length < MIN_PASSWORD) return setPwErr(`Password must be at least ${MIN_PASSWORD} characters.`);
     if (pw1 !== pw2) return setPwErr('Passwords do not match.');
-    setPwOk(true);
     setPwErr('');
-    setPw1('');
-    setPw2('');
-    setPwOpen(false);
+    void (async () => {
+      const res = await changePassword(pw1);
+      if (res.ok) {
+        setPwOk(true);
+        setPwErr('');
+        setPw1('');
+        setPw2('');
+        setPwOpen(false);
+      } else {
+        setPwErr(res.message);
+      }
+    })();
   };
 
   const toggleNotif = (k: keyof NotificationPrefs) => {
@@ -151,16 +161,24 @@ export function ProfileSettings() {
 
   const confirmDelete = () => {
     if (delText !== DELETE_WORD) return;
-    deleteAccount();
+    void deleteAccount();
   };
 
   const resetDemo = () => {
-    reset();
-    setD(draftFrom(useFitStore.getState()));
-    setErr({ error: '' });
-    setSaved(false);
-    setRecalced(false);
-    setResetDone(true);
+    void reset().then(() => {
+      setD(draftFrom(useFitStore.getState()));
+      setErr({ error: '' });
+      setSaved(false);
+      setRecalced(false);
+      setResetDone(true);
+    });
+  };
+
+  const importDevice = () => {
+    void importFromDevice().then((ok) => {
+      setD(draftFrom(useFitStore.getState()));
+      setImportNote(ok ? 'Imported the data from this device.' : 'No FitAI data found on this device.');
+    });
   };
 
   if (justDeleted) {
@@ -544,6 +562,16 @@ export function ProfileSettings() {
                 Reset demo data
               </button>
               {resetDone && <StatusText tone="success">Demo data restored to the original sample week.</StatusText>}
+
+              <button
+                type="button"
+                onClick={importDevice}
+                data-testid="profile-import-button"
+                className="min-h-11 self-start text-[13px] font-medium text-placeholder underline-offset-4 transition-colors duration-150 hover:text-fg hover:underline md:min-h-0"
+              >
+                Import data from this device
+              </button>
+              {importNote && <StatusText tone={importNote.startsWith('Imported') ? 'success' : 'error'}>{importNote}</StatusText>}
 
               <div className="border-t border-line pt-3">
                 <button
