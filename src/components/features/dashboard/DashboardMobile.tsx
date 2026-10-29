@@ -16,6 +16,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Ring } from '@/components/ui/Ring';
 import { Eyebrow, ExercisePlaceholder, NovaAvatar } from '@/components/ui/misc';
 import { NumberStat } from '@/components/ui/NumberStat';
+import { InstallAppButton } from '@/components/pwa/InstallAppButton';
 import { OfflineIndicator } from '@/components/pwa/OfflineIndicator';
 import { fmtFull, TODAY } from '@/lib/date';
 import { weightSeries } from '@/lib/selectors';
@@ -67,6 +68,8 @@ export function DashboardMobile({ d }: { d: DashboardData }) {
           <span className="text-lime">{d.goalName}</span> · {d.weight} → {d.goalWeight} kg
         </span>
       </Link>
+
+      <InstallAppButton variant="card" />
 
       {d.tipVisible && (
         <div className="flex items-start gap-3 rounded-[14px] border border-violet-line bg-violet-tint px-3.5 py-3" role="note">

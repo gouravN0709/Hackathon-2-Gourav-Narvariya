@@ -25,6 +25,7 @@ export const ICONS = {
   play: 'M7 4l13 8-13 8z',
   share: 'M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8 M16 6l-4-4-4 4 M12 2v13',
   help: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3 M12 17h.01',
+  download: 'M12 3v12 M7 10l5 5 5-5 M5 21h14',
 } as const;
 
 export type IconName = keyof typeof ICONS;

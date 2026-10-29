@@ -138,6 +138,13 @@ test.describe('PWA (Progressive Web App)', () => {
     await expect(page.getByTestId('pwa-install-banner')).not.toBeVisible();
   });
 
+  test('PWA-05b: Dashboard shows clear install app control', async ({ page }) => {
+    await loginUser(page);
+    await page.waitForURL('/dashboard');
+    await expect(page.getByTestId('dashboard-install-button')).toBeVisible();
+    await expect(page.getByText('Install FitAI app').or(page.getByText('Install app'))).toBeVisible();
+  });
+
   test('PWA-06: Profile & Settings includes Install App row and hides in standalone mode', async ({ page }) => {
     await loginUser(page);
     await page.getByTestId('sidebar-nav-profile').click();

@@ -19,6 +19,7 @@ import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { Eyebrow, ExercisePlaceholder, NovaAvatar } from '@/components/ui/misc';
 import { NumberStat } from '@/components/ui/NumberStat';
 import { Stack } from '@/components/ui/Layout';
+import { InstallAppButton } from '@/components/pwa/InstallAppButton';
 import { fmtFull, TODAY } from '@/lib/date';
 import { signed } from '@/lib/format';
 import { latestWeight, weightSeries } from '@/lib/selectors';
@@ -46,6 +47,7 @@ export function DashboardDesktop({ d }: { d: DashboardData }) {
               <span className="text-lime">{d.goalName}</span> · {d.weight} → {d.goalWeight} kg
             </span>
           </Link>
+          <InstallAppButton variant="pill" />
           <Link
             href="/help"
             aria-label="Help & guides"
