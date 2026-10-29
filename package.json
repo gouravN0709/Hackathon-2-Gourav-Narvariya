@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
     "postinstall": "node -e \"const fs=require('fs'),p='node_modules/next/dist/compiled/loader-runner';if(fs.existsSync(p)&&!fs.existsSync(p+'/index.js'))fs.writeFileSync(p+'/index.js','module.exports=require(\\'./LoaderRunner.js\\');\\n')\"",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
