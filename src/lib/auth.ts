@@ -14,6 +14,9 @@ export function friendlyAuthError(message: string): string {
   if (m.includes('at least 6 characters') || m.includes('weak password'))
     return 'Use at least 8 characters for your password.';
   if (m.includes('email not confirmed')) return 'Confirm your email first, then log in.';
+  if (m.includes('database error saving new user')) {
+    return 'We could not finish creating your account. Try again in a moment.';
+  }
   if (m.includes('session not found') || m.includes('refresh token')) {
     return 'Your session ended. Log in to continue.';
   }

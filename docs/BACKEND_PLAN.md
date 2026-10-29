@@ -172,4 +172,4 @@ npm run db:types && npm run dev # sync types, start app
 npm run test:unit / test:db / test:integration / test:e2e
 ```
 
-Deploy: `supabase link --project-ref …`, `supabase db push`, set env vars on the host, run seed.sql once (catalogs). **Never run seed-demo.sql in prod.** New migrations: `npx supabase migration new <name>` then `db reset` to verify.
+Deploy: see **`docs/DEPLOYMENT.md`** (link, `db push`, Vercel env, catalog sync, read-only verify). Catalogs ship in migration `20261029000004`; `seed.sql` is local reset only. **Never run seed-demo.sql in prod.** New migrations: `npx supabase migration new <name>` then `db reset` locally to verify.

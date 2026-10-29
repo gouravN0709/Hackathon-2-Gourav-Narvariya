@@ -1,5 +1,6 @@
 -- FitAI catalogs: exercises, workouts (+ workout_exercises), foods.
 -- Read-only for clients; mirrors src/lib/data/workouts.ts + src/lib/data/foods.ts.
+-- Keep INSERT payloads in sync with supabase/migrations/20261029000004_catalog_seed.sql (npm run db:check-catalog-seed).
 
 -- ────────────── exercises ──────────────
 insert into exercises (key, name, muscle, muscle_group, default_sets, default_reps, default_kg, rest_seconds, step, tip, lift_key) values
