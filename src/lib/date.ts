@@ -1,7 +1,15 @@
 import type { ISODate } from '@/types/domain';
 
-/** The demo data is seeded around this date. Swap for `new Date().toISOString().slice(0, 10)` to go live. */
-export const TODAY: ISODate = '2026-10-15';
+function realToday(): ISODate {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/**
+ * "Today" is env-overridable so tests and demo builds can freeze the clock
+ * (NEXT_PUBLIC_TODAY=2026-10-15). In plain local/dev use it is the real date.
+ */
+const frozen = process.env.NEXT_PUBLIC_TODAY;
+export const TODAY: ISODate = frozen && /^\d{4}-\d{2}-\d{2}$/.test(frozen) ? frozen : realToday();
 
 export const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 export const DOW_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;

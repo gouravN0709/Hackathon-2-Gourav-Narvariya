@@ -46,8 +46,14 @@ export interface DayInfo {
   status: DayStatus;
 }
 
+/** Effective weekly plan: DB plan (when present) overrides the built-in SCHEDULE. */
+export function planFor(s: FitData): Partial<Record<number, WorkoutKey>> {
+  const overrides = s.plan ?? {};
+  return Object.keys(overrides).length ? overrides : SCHEDULE;
+}
+
 export function dayInfo(s: FitData, date: ISODate): DayInfo {
-  const key = SCHEDULE[dow(date)];
+  const key = planFor(s)[dow(date)];
   const session = sessionOn(s, date);
   let status: DayStatus;
   if (!key) status = 'rest';
@@ -141,8 +147,9 @@ export interface PeriodStats {
 
 export function stats(s: FitData, n: number): PeriodStats {
   const start = addDays(TODAY, -(n - 1));
+  const plan = planFor(s);
   let planned = 0;
-  for (let i = 0; i < n; i++) if (SCHEDULE[dow(addDays(start, i))]) planned++;
+  for (let i = 0; i < n; i++) if (plan[dow(addDays(start, i))]) planned++;
   let done = 0;
   let minutes = 0;
   let volume = 0;

@@ -72,6 +72,8 @@ export interface Session {
 
 /** k / p / c / f = kcal, protein, carbs, fats */
 export interface FoodEntry {
+  /** Server row id (meal_entries.id). Absent on freshly-added optimistic rows. */
+  id?: string;
   name: string;
   serving: string;
   k: number;
@@ -141,4 +143,6 @@ export interface FitData {
   nutritionHistory: Record<ISODate, DayIntake>;
   chat: ChatMessage[];
   ui: UIState;
+  /** Weekly plan from user_plan; non-empty entries override SCHEDULE. */
+  plan?: Partial<Record<number, WorkoutKey>>;
 }
