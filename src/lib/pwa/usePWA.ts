@@ -45,3 +45,4 @@ export function usePWA() {
     recordAction: () => pwaManager.recordAction(),
   };
 }
+

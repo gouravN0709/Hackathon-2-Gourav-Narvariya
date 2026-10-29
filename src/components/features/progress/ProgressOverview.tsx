@@ -14,6 +14,7 @@ import { Field, Label } from '@/components/ui/Field';
 import { Ring } from '@/components/ui/Ring';
 import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { Icon } from '@/components/ui/Icon';
+import { InfoTip } from '@/components/ui/InfoTip';
 import { NumberStat } from '@/components/ui/NumberStat';
 import { PageContainer, Stack } from '@/components/ui/Layout';
 import { showToast } from '@/components/ui/Toast';
@@ -241,7 +242,10 @@ export function ProgressOverview() {
         <section className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-[18px] items-stretch">
           <Card className="flex min-w-0 flex-col gap-4">
             <div>
-              <h3 className="text-[19px] font-bold">Weight history</h3>
+              <div className="flex items-center gap-1.5">
+                <h3 className="text-[19px] font-bold">Weight history</h3>
+                <InfoTip topicId="weight-history" />
+              </div>
               <p className="mt-1 text-[14px] text-muted">
                 {signed(d)} kg {is7 ? 'this week' : 'in 30 days'} · steady, healthy pace
               </p>
@@ -252,7 +256,10 @@ export function ProgressOverview() {
           </Card>
 
           <Card className="flex min-w-0 flex-col items-center gap-4 text-center justify-between">
-            <h3 className="self-start text-[19px] font-bold">Goal progress</h3>
+            <div className="flex items-center gap-1.5 self-start">
+              <h3 className="text-[19px] font-bold">Goal progress</h3>
+              <InfoTip topicId="goal-progress-calc" example={`${gp}% achieved (${kgToGo(s)} kg to go)`} />
+            </div>
             <Ring size={164} radius={70} stroke={14} value={gp} label={`Goal progress ${gp} percent`}>
               <p className="font-display text-[34px] font-extrabold">
                 <NumberStat value={gp} suffix="%" />
@@ -268,20 +275,29 @@ export function ProgressOverview() {
           </Card>
         </section>
 
-        <section aria-label="AI insights" className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
-          {insights.map((i) => (
-            <Card key={i.tag} className={`flex min-w-0 flex-col gap-2.5 ${INSIGHT_STYLES[i.tone].border}`}>
-              <p className={`text-[12px] font-bold tracking-[0.1em] ${INSIGHT_STYLES[i.tone].tag}`}>{i.tag}</p>
-              <h3 className="text-[18px] leading-[1.3] font-bold">{i.title}</h3>
-              <p className="text-[15px] leading-[1.55] text-muted">{i.body}</p>
-            </Card>
-          ))}
-        </section>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-[18px] font-bold">Progress insights</h2>
+            <InfoTip topicId="progress-insights" />
+          </div>
+          <section aria-label="AI insights" className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
+            {insights.map((i) => (
+              <Card key={i.tag} className={`flex min-w-0 flex-col gap-2.5 ${INSIGHT_STYLES[i.tone].border}`}>
+                <p className={`text-[12px] font-bold tracking-[0.1em] ${INSIGHT_STYLES[i.tone].tag}`}>{i.tag}</p>
+                <h3 className="text-[18px] leading-[1.3] font-bold">{i.title}</h3>
+                <p className="text-[15px] leading-[1.55] text-muted">{i.body}</p>
+              </Card>
+            ))}
+          </section>
+        </div>
 
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[18px] items-stretch">
           <Card className="flex min-w-0 flex-col gap-4">
             <div>
-              <h3 className="text-[19px] font-bold">Workout consistency</h3>
+              <div className="flex items-center gap-1.5">
+                <h3 className="text-[19px] font-bold">Workout consistency</h3>
+                <InfoTip topicId="workout-consistency" />
+              </div>
               <p className="mt-1 text-[14px] text-muted">{is7 ? 'Training minutes per day' : 'Sessions per week (target 4)'}</p>
             </div>
             <div className="min-w-0 flex-1">
@@ -294,7 +310,10 @@ export function ProgressOverview() {
 
           <Card className="flex min-w-0 flex-col gap-4">
             <div>
-              <h3 className="text-[19px] font-bold">Strength progress</h3>
+              <div className="flex items-center gap-1.5">
+                <h3 className="text-[19px] font-bold">Strength progress</h3>
+                <InfoTip topicId="strength-progress" />
+              </div>
               <p className="mt-1 text-[14px] text-muted">Top set, {is7 ? 'last 7 days' : 'last 30 days'}</p>
             </div>
             <div className="flex flex-col gap-3">
@@ -324,7 +343,10 @@ export function ProgressOverview() {
 
         <Card as="section" aria-label="Calorie trend" className="flex min-w-0 flex-col gap-4">
           <div>
-            <h3 className="text-[19px] font-bold">Calorie trend</h3>
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-[19px] font-bold">Calorie trend</h3>
+              <InfoTip topicId="calorie-trend" example={`Average ${num(avg.k)} kcal vs target ${num(u.targets.kcal)} kcal`} />
+            </div>
             <p className="mt-1 text-[14px] text-muted">
               Daily calories vs your {num(u.targets.kcal)} kcal target · average {num(avg.k)} kcal
             </p>

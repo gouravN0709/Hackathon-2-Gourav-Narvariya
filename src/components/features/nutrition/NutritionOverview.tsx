@@ -9,6 +9,7 @@ import { Icon } from '@/components/ui/Icon';
 import { Pill } from '@/components/ui/Pill';
 import { ProgressBar, type BarColor } from '@/components/ui/ProgressBar';
 import { Ring } from '@/components/ui/Ring';
+import { InfoTip } from '@/components/ui/InfoTip';
 import { EmptyState, NovaAvatar } from '@/components/ui/misc';
 import { NumberStat } from '@/components/ui/NumberStat';
 import { PageContainer, Stack } from '@/components/ui/Layout';
@@ -126,13 +127,19 @@ export function NutritionOverview() {
             </Ring>
             <div className="flex flex-col gap-3.5">
               <div>
-                <p className="text-[13px] font-medium text-muted">Remaining calories</p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-[13px] font-medium text-muted">Remaining calories</p>
+                  <InfoTip topicId="remaining-calories" example={`You have ${left} kcal remaining today`} />
+                </div>
                 <p className="font-display text-[28px] font-extrabold text-lime">
                   <NumberStat value={left} /> <span className="font-sans text-[15px] font-medium text-muted">kcal</span>
                 </p>
               </div>
               <div>
-                <p className="text-[13px] font-medium text-muted">Remaining protein</p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-[13px] font-medium text-muted">Remaining protein</p>
+                  <InfoTip topicId="protein-target" example={`Need ${protLeft} g more to hit ${tg.protein} g`} />
+                </div>
                 <p className="font-display text-[28px] font-extrabold text-violet-soft">
                   <NumberStat value={protLeft} /> <span className="font-sans text-[15px] font-medium text-muted">g</span>
                 </p>
@@ -141,7 +148,10 @@ export function NutritionOverview() {
           </Card>
 
           <Card className="flex min-w-0 flex-col justify-center gap-4">
-            <h3 className="text-[18px] font-bold">Macros</h3>
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-[18px] font-bold">Macros</h3>
+              <InfoTip topicId="macro-split" example={`Current: ${t.p}g P, ${t.c}g C, ${t.f}g F`} />
+            </div>
             <div className="flex flex-col gap-3.5">
               {macros.map((m) => (
                 <div key={m.name}>
@@ -164,7 +174,10 @@ export function NutritionOverview() {
                 <NovaAvatar size={34} iconSize={18} strokeWidth={2.2} />
                 <p className="text-[12px] font-bold tracking-[0.1em] text-violet-soft">AI MEAL SUGGESTION</p>
               </div>
-              <h3 className="text-[20px] font-bold">Paneer tikka bowl for dinner</h3>
+              <div className="flex items-center gap-1.5">
+                <h3 className="text-[20px] font-bold">Paneer tikka bowl for dinner</h3>
+                <InfoTip topicId="ai-meal-suggestion" />
+              </div>
               <p className="text-[14px] leading-[1.55] text-muted">
                 Fits your remaining {num(left)} kcal and closes {Math.min(SUGGESTED_MEAL.p, protLeft)} g of your {protLeft} g protein gap.
               </p>
@@ -180,7 +193,10 @@ export function NutritionOverview() {
         </section>
 
         <div className="flex flex-col gap-4">
-          <h2 className="text-[22px] font-bold">Today&apos;s food log</h2>
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-[22px] font-bold">Today&apos;s food log</h2>
+            <InfoTip topicId="meal-log" />
+          </div>
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-[18px] items-start">
             {MEALS.map((d) => {
               const items = s.meals[d.key];
@@ -205,7 +221,10 @@ export function NutritionOverview() {
                     <div key={`${it.name}-${i}`} className="flex items-center gap-3.5 py-1">
                       <div className="min-w-0 flex-1">
                         <p className="text-[16px] font-semibold">{it.name}</p>
-                        <p className="mt-0.5 text-[13px] text-muted">{it.serving}</p>
+                        <div className="flex items-center gap-1">
+                          <p className="mt-0.5 text-[13px] text-muted">{it.serving}</p>
+                          <InfoTip topicId="serving-size" size={13} />
+                        </div>
                       </div>
                       <div className="text-right">
                         <p className="font-bold whitespace-nowrap">{num(it.k)} kcal</p>

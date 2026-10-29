@@ -6,6 +6,7 @@ import { OptionCard } from '@/components/features/auth/OptionCard';
 import { Alert } from '@/components/ui/Alert';
 import { Button, LinkButton } from '@/components/ui/Button';
 import { Field, Label } from '@/components/ui/Field';
+import { InfoTip } from '@/components/ui/InfoTip';
 import { Spinner, SuccessCheck } from '@/components/ui/misc';
 import { DIETS, EXPERIENCES, ONBOARDING_GOALS, optionTitle } from '@/lib/data/options';
 import { num } from '@/lib/format';
@@ -138,9 +139,12 @@ export function OnboardingFlow() {
     </div>
   );
 
-  const heading = (title: string, sub: string) => (
+  const heading = (title: string, sub: string, topicId?: string) => (
     <div>
-      <h2 className="text-[26px] leading-[1.2] font-bold md:text-[32px]">{title}</h2>
+      <div className="flex items-center gap-2">
+        <h2 className="text-[26px] leading-[1.2] font-bold md:text-[32px]">{title}</h2>
+        {topicId && <InfoTip topicId={topicId} />}
+      </div>
       <p className="mt-2 text-[17px] text-muted">{sub}</p>
     </div>
   );
@@ -161,7 +165,7 @@ export function OnboardingFlow() {
 
       {step === 1 && (
         <div className="flex flex-col gap-[22px]">
-          {heading('Tell us about you', 'We use this to set your calorie and protein targets.')}
+          {heading('Tell us about you', 'We use this to set your calorie and protein targets.', 'onboarding-step-1')}
           <div className="flex flex-wrap gap-4">
             {numberField('age', 'Age', age, setAge, 'years')}
             {numberField('height', 'Height', height, setHeight, 'cm')}
@@ -172,7 +176,7 @@ export function OnboardingFlow() {
 
       {step === 2 && (
         <div className="flex flex-col gap-[22px]">
-          {heading("What's your main goal?", 'Pick the one that matters most right now.')}
+          {heading("What's your main goal?", 'Pick the one that matters most right now.', 'onboarding-step-2')}
           <div className="flex flex-col gap-3">
             {ONBOARDING_GOALS.map((o) => (
               <OptionCard key={o.id} title={o.title} desc={o.desc} on={goal === o.id} onPick={() => choose(setGoal, o.id)} />
@@ -183,7 +187,7 @@ export function OnboardingFlow() {
 
       {step === 3 && (
         <div className="flex flex-col gap-[22px]">
-          {heading('How experienced are you?', 'This sets exercise difficulty and weekly volume.')}
+          {heading('How experienced are you?', 'This sets exercise difficulty and weekly volume.', 'onboarding-step-3')}
           <div className="flex flex-col gap-3">
             {EXPERIENCES.map((o) => (
               <OptionCard key={o.id} title={o.title} desc={o.desc} on={exp === o.id} onPick={() => choose(setExp, o.id)} />
@@ -194,7 +198,7 @@ export function OnboardingFlow() {
 
       {step === 4 && (
         <div className="flex flex-col gap-[22px]">
-          {heading('How do you eat?', 'Nova will only suggest meals that match.')}
+          {heading('How do you eat?', 'Nova will only suggest meals that match.', 'onboarding-step-4')}
           <div className="flex flex-wrap gap-3">
             {DIETS.map((o) => (
               <OptionCard
@@ -211,7 +215,7 @@ export function OnboardingFlow() {
 
       {step === 5 && (
         <div className="flex flex-col gap-5">
-          {heading(`Looks good, ${user.first}?`, 'Check your answers. Nova will build your plan from these.')}
+          {heading(`Looks good, ${user.first}?`, 'Check your answers. Nova will build your plan from these.', 'onboarding-step-5')}
           <dl>
             {[
               ['Age', `${a} years`],

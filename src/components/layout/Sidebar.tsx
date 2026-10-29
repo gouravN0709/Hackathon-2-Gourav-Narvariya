@@ -106,6 +106,16 @@ export function Sidebar() {
               <span className="mt-0.5 block truncate text-[13px] text-muted">{GOAL_NAME[user.goal]} · Week 6</span>
             </span>
           </Link>
+          <Link
+            href="/help"
+            aria-label={collapsed ? 'Help & guides' : undefined}
+            title="Help & guides - In-app guides, glossary & FAQs"
+            data-testid="sidebar-help"
+            className="flex h-9 items-center justify-center gap-2 rounded-xl px-2.5 text-[13px] font-medium text-muted transition-colors duration-150 hover:bg-row hover:text-fg"
+          >
+            <Icon name="help" size={16} strokeWidth={2} className="flex-none" />
+            <span className={clsx('truncate', labelCls)}>Help &amp; guides</span>
+          </Link>
           <button
             type="button"
             onClick={() => setFeedbackOpen(true)}

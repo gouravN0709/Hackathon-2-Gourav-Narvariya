@@ -7,6 +7,7 @@ import { LinkButton } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
 import { Pill } from '@/components/ui/Pill';
+import { InfoTip } from '@/components/ui/InfoTip';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { NovaAvatar } from '@/components/ui/misc';
 import { PageContainer } from '@/components/ui/Layout';
@@ -97,10 +98,13 @@ export function CoachChat() {
         subtitle="Ask anything. Nova answers from your own workouts, meals and weight."
         actions={
           <div className="flex flex-wrap items-center gap-3">
-            <Pill>
-              <Icon name="shield" size={14} className="text-lime" />
-              Your data stays private
-            </Pill>
+            <div className="flex items-center gap-1.5">
+              <Pill>
+                <Icon name="shield" size={14} className="text-lime" />
+                Your data stays private
+              </Pill>
+              <InfoTip topicId="data-privacy" />
+            </div>
             <LinkButton href="/dashboard" variant="ghost" size="sm">
               <Icon name="chevronLeft" size={16} />
               Back to dashboard
@@ -118,7 +122,10 @@ export function CoachChat() {
           <div className="flex items-center gap-3.5 border-b border-line px-5 py-4">
             <NovaAvatar size={44} iconSize={22} />
             <div>
-              <p className="font-display text-[17px] font-bold">Nova</p>
+              <div className="flex items-center gap-1.5">
+                <p className="font-display text-[17px] font-bold">Nova</p>
+                <InfoTip topicId="nova-context" example={`Nova knows your ${goalName} goal, current weight ${latestWeight(s).toFixed(1)} kg, and today's ${wName} workout`} />
+              </div>
               <p className="mt-0.5 flex items-center gap-1.5 text-[13px] text-lime">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime opacity-75" />
@@ -208,18 +215,24 @@ export function CoachChat() {
               'flex flex-col gap-3.5 border-t border-line bg-card p-4 md:p-5',
             )}
           >
-            <div className="flex gap-2.5 overflow-x-auto pb-1 md:flex-wrap">
-              {PROMPTS.map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => ask(p)}
-                  disabled={typing}
-                  className="h-9 flex-none rounded-full border border-line-active bg-transparent px-3.5 text-left text-[13px] font-semibold whitespace-nowrap text-chip-fg transition-colors duration-150 hover:border-lime hover:bg-chip hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {p}
-                </button>
-              ))}
+            <div>
+              <div className="mb-2 flex items-center gap-1.5">
+                <span className="text-[12px] font-medium text-muted">Suggested prompts</span>
+                <InfoTip topicId="suggested-prompts" />
+              </div>
+              <div className="flex gap-2.5 overflow-x-auto pb-1 md:flex-wrap">
+                {PROMPTS.map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => ask(p)}
+                    disabled={typing}
+                    className="h-9 flex-none rounded-full border border-line-active bg-transparent px-3.5 text-left text-[13px] font-semibold whitespace-nowrap text-chip-fg transition-colors duration-150 hover:border-lime hover:bg-chip hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <form onSubmit={submit} noValidate className="flex flex-col gap-2">
@@ -260,6 +273,10 @@ export function CoachChat() {
         </Card>
 
         <aside className="flex min-w-0 flex-col gap-6">
+          <div className="flex items-center gap-1.5 px-1">
+            <h2 className="text-[14px] font-bold tracking-wider uppercase text-muted">What Nova knows today</h2>
+            <InfoTip topicId="nova-context" />
+          </div>
           <Card>
             <h3 className="text-[19px] font-bold">Today&apos;s workout</h3>
             <p className="mt-1 text-[13px] text-muted">{wStatus}</p>

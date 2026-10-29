@@ -11,6 +11,7 @@ import type { DashboardData } from '@/components/features/dashboard/useDashboard
 import { LinkButton } from '@/components/ui/Button';
 import { Card, cardClass } from '@/components/ui/Card';
 import { Icon, PlayIcon } from '@/components/ui/Icon';
+import { InfoTip } from '@/components/ui/InfoTip';
 import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Ring } from '@/components/ui/Ring';
@@ -46,6 +47,15 @@ export function DashboardDesktop({ d }: { d: DashboardData }) {
             </span>
           </Link>
           <Link
+            href="/help"
+            aria-label="Help & guides"
+            title="Help & guides"
+            data-testid="header-help-button"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line bg-card text-muted transition-colors hover:border-line-hover hover:text-fg"
+          >
+            <Icon name="help" size={22} />
+          </Link>
+          <Link
             href="/profile"
             aria-label="Open profile"
             className="flex h-[52px] w-[52px] items-center justify-center rounded-full border-2 border-lime bg-active font-display text-[20px] font-bold text-lime"
@@ -74,62 +84,98 @@ export function DashboardDesktop({ d }: { d: DashboardData }) {
         </div>
       )}
 
-      <section aria-label="Daily summary" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[18px]">
-        <Link href="/nutrition" data-testid="dashboard-calories-card" className={cardClass('default', 'flex items-center gap-[18px] text-fg hover:bg-raised')}>
-          <Ring size={96} radius={38} stroke={9} value={d.calPct} label={`Calories ${d.calPct} percent of target`}>
-            <span className="font-display text-[20px] font-bold">
-              <NumberStat value={d.calPct} suffix="%" />
-            </span>
-          </Ring>
-          <div>
-            <p className="text-[13px] font-medium text-muted">Calories</p>
-            <p className="mt-0.5 font-display text-[28px] font-bold">
-              <NumberStat value={d.rawKcal} />
-            </p>
-            <p className="text-[14px] text-muted">
-              of {d.kcalTarget} kcal · {d.kcalLeft} left
-            </p>
+      <section aria-label="Daily summary" data-tour="dashboard-summary" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[18px]">
+        <div data-testid="dashboard-calories-card" className={cardClass('default', 'flex items-center gap-[18px] text-fg hover:bg-raised transition-colors')}>
+          <Link href="/nutrition" aria-label="View nutrition breakdown" className="flex-none">
+            <Ring size={96} radius={38} stroke={9} value={d.calPct} label={`Calories ${d.calPct} percent of target`}>
+              <span className="font-display text-[20px] font-bold">
+                <NumberStat value={d.calPct} suffix="%" />
+              </span>
+            </Ring>
+          </Link>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <Link href="/nutrition" className="text-[13px] font-medium text-muted hover:text-fg">
+                Calories
+              </Link>
+              <InfoTip topicId="calories-ring" example={`You have ${d.kcalLeft} left today`} />
+            </div>
+            <Link href="/nutrition" className="block">
+              <p className="mt-0.5 font-display text-[28px] font-bold">
+                <NumberStat value={d.rawKcal} />
+              </p>
+              <p className="text-[14px] text-muted">
+                of {d.kcalTarget} kcal · {d.kcalLeft} left
+              </p>
+            </Link>
           </div>
-        </Link>
+        </div>
 
-        <Link href="/nutrition" data-testid="dashboard-protein-card" className={cardClass('default', 'flex flex-col justify-center gap-3 text-fg hover:bg-raised')}>
+        <div data-testid="dashboard-protein-card" className={cardClass('default', 'flex flex-col justify-center gap-3 text-fg hover:bg-raised transition-colors')}>
           <div className="flex items-baseline justify-between">
-            <p className="text-[13px] font-medium text-muted">Protein</p>
+            <div className="flex items-center gap-1.5">
+              <Link href="/nutrition" className="text-[13px] font-medium text-muted hover:text-fg">
+                Protein
+              </Link>
+              <InfoTip topicId="protein-target" example={`${d.rawProtein} / ${d.proteinTarget} g logged today`} />
+            </div>
             <Pill tone="violet">
               <NumberStat value={d.protPct} suffix="%" />
             </Pill>
           </div>
-          <p className="font-display text-[28px] font-bold">
-            <NumberStat value={d.rawProtein} /> <span className="font-sans text-[16px] font-medium text-muted">/ {d.proteinTarget} g</span>
-          </p>
-          <ProgressBar value={d.protPct} color="violet" label={`Protein ${d.protPct} percent of target`} />
-          <p className="text-[14px] text-muted">{d.protNote}</p>
-        </Link>
+          <Link href="/nutrition" className="block">
+            <p className="font-display text-[28px] font-bold">
+              <NumberStat value={d.rawProtein} /> <span className="font-sans text-[16px] font-medium text-muted">/ {d.proteinTarget} g</span>
+            </p>
+            <div className="mt-3">
+              <ProgressBar value={d.protPct} color="violet" label={`Protein ${d.protPct} percent of target`} />
+            </div>
+            <p className="mt-2 text-[14px] text-muted">{d.protNote}</p>
+          </Link>
+        </div>
 
-        <Link href="/workouts" data-testid="dashboard-workout-card" className={cardClass('default', 'flex flex-col justify-center gap-2.5 text-fg hover:bg-raised')}>
+        <div data-testid="dashboard-workout-card" className={cardClass('default', 'flex flex-col justify-center gap-2.5 text-fg hover:bg-raised transition-colors')}>
           <div className="flex items-center justify-between">
-            <p className="text-[13px] font-medium text-muted">Today&apos;s workout</p>
+            <div className="flex items-center gap-1.5">
+              <Link href="/workouts" className="text-[13px] font-medium text-muted hover:text-fg">
+                Today&apos;s workout
+              </Link>
+              <InfoTip topicId="workout-status" />
+            </div>
             <Pill tone="lime">{d.wStatus}</Pill>
           </div>
-          <p className="font-display text-[22px] font-bold">{d.wName}</p>
-          <p className="text-[14px] text-muted">{d.wSub}</p>
-          <WeekSegments segs={d.segs} done={d.sessionsDone} />
-        </Link>
+          <Link href="/workouts" className="block">
+            <p className="font-display text-[22px] font-bold">{d.wName}</p>
+            <p className="text-[14px] text-muted">{d.wSub}</p>
+            <div className="mt-2.5">
+              <WeekSegments segs={d.segs} done={d.sessionsDone} />
+            </div>
+          </Link>
+        </div>
 
-        <Link href="/progress" data-testid="dashboard-weight-card" className={cardClass('default', 'flex flex-col justify-center gap-3 text-fg hover:bg-raised')}>
+        <div data-testid="dashboard-weight-card" className={cardClass('default', 'flex flex-col justify-center gap-3 text-fg hover:bg-raised transition-colors')}>
           <div className="flex items-baseline justify-between">
-            <p className="text-[13px] font-medium text-muted">Current weight</p>
+            <div className="flex items-center gap-1.5">
+              <Link href="/progress" className="text-[13px] font-medium text-muted hover:text-fg">
+                Current weight
+              </Link>
+              <InfoTip topicId="goal-progress" example={`${d.rawWeight.toFixed(1)} kg (${d.goalPct}% towards ${d.goalWeight} kg)`} />
+            </div>
             <Pill>{d.wDelta} / 30d</Pill>
           </div>
-          <p className="font-display text-[28px] font-bold">
-            <NumberStat value={d.rawWeight} decimals={1} />{' '}
-            <span className="font-sans text-[16px] font-medium text-muted">kg → {d.goalWeight} kg</span>
-          </p>
-          <ProgressBar value={d.goalPct} label={`Goal progress ${d.goalPct} percent`} />
-          <p className="text-[14px] text-muted">
-            <NumberStat value={d.goalPct} suffix="%" /> of the way · {d.toGo} kg to go
-          </p>
-        </Link>
+          <Link href="/progress" className="block">
+            <p className="font-display text-[28px] font-bold">
+              <NumberStat value={d.rawWeight} decimals={1} />{' '}
+              <span className="font-sans text-[16px] font-medium text-muted">kg → {d.goalWeight} kg</span>
+            </p>
+            <div className="mt-3">
+              <ProgressBar value={d.goalPct} label={`Goal progress ${d.goalPct} percent`} />
+            </div>
+            <p className="mt-2 text-[14px] text-muted">
+              <NumberStat value={d.goalPct} suffix="%" /> of the way · {d.toGo} kg to go
+            </p>
+          </Link>
+        </div>
       </section>
 
       <QuickActions variant="desktop" />
@@ -233,9 +279,14 @@ function CoachCard({ d }: { d: DashboardData }) {
   return (
     <Card tone="ai" className="flex min-w-0 flex-col gap-4 justify-between">
       <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-3">
-          <NovaAvatar size={42} iconSize={22} />
-          <h3 className="text-[19px] font-bold">Your AI Coach</h3>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-3">
+            <NovaAvatar size={42} iconSize={22} />
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-[19px] font-bold">Your AI Coach</h3>
+              <InfoTip topicId="coach-card" />
+            </div>
+          </div>
         </div>
         <p className="text-[17px] leading-[1.55]">{d.coachText}</p>
         <div className="flex flex-col gap-2.5">
@@ -260,7 +311,10 @@ function WeightTrendCard() {
     <Card className="flex min-w-0 flex-col gap-3.5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="text-[19px] font-bold">Weight progress</h3>
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-[19px] font-bold">Weight progress</h3>
+            <InfoTip topicId="weight-trend" />
+          </div>
           <p className="mt-1 text-[14px] text-muted">
             {signed(delta)} kg {range === 7 ? 'this week' : 'in 30 days'} · on track
           </p>
@@ -288,7 +342,10 @@ function NutritionCard({ d }: { d: DashboardData }) {
     <Card className="flex min-w-0 flex-col gap-4 justify-between">
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-[19px] font-bold">Today&apos;s nutrition</h3>
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-[19px] font-bold">Today&apos;s nutrition</h3>
+            <InfoTip topicId="nutrition-card" />
+          </div>
           <Link href="/nutrition" className="text-[13px] font-semibold text-lime hover:underline">
             View log
           </Link>

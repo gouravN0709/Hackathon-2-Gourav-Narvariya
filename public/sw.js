@@ -28,6 +28,7 @@ const PRECACHE_ROUTES = [
   '/coach',
   '/progress',
   '/profile',
+  '/help',
   '/login',
   '/onboarding',
   '/offline',

@@ -16,6 +16,7 @@ import { Button, LinkButton } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
 import { Pill } from '@/components/ui/Pill';
+import { InfoTip } from '@/components/ui/InfoTip';
 import { ExercisePlaceholder, StepButton, SuccessCheck } from '@/components/ui/misc';
 import { NumberStat } from '@/components/ui/NumberStat';
 import { Ring } from '@/components/ui/Ring';
@@ -183,9 +184,12 @@ export function ActiveWorkout() {
           {active && (
             <div className="hidden flex-wrap items-center gap-3 md:flex">
               <SessionPills clock={mmss(elapsed)} setsDone={setsDone} setsTotal={setsTotal} volume={volume} />
-              <Button onClick={save} disabled={phase === 'saving'} data-testid="active-finish-save-button">
-                {saveLabel}
-              </Button>
+              <div className="flex items-center gap-1.5">
+                <Button onClick={save} disabled={phase === 'saving'} data-testid="active-finish-save-button">
+                  {saveLabel}
+                </Button>
+                <InfoTip topicId="finish-workout" />
+              </div>
             </div>
           )}
         </header>
@@ -303,14 +307,17 @@ export function ActiveWorkout() {
                 >
                   + Add set
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  data-testid="active-complete-exercise-button"
-                  onClick={() => dispatch({ type: 'complete', ei })}
-                >
-                  Complete exercise
-                </Button>
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    data-testid="active-complete-exercise-button"
+                    onClick={() => dispatch({ type: 'complete', ei })}
+                  >
+                    Complete exercise
+                  </Button>
+                  <InfoTip topicId="finish-workout" />
+                </div>
               </div>
 
               {restTimeLeft != null && restTimeLeft > 0 && (
@@ -326,7 +333,10 @@ export function ActiveWorkout() {
                       <span className="font-display text-[12px] font-bold">{restTimeLeft}s</span>
                     </Ring>
                     <div>
-                      <p className="text-[14px] font-bold text-lime">Rest timer counting down</p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-[14px] font-bold text-lime">Rest timer counting down</p>
+                        <InfoTip topicId="rest-timer" />
+                      </div>
                       <p className="text-[12px] text-muted">
                         Catch your breath before set {cur.sets.findIndex((s) => !s.done) + 1 || cur.sets.length}
                       </p>
@@ -366,16 +376,22 @@ export function ActiveWorkout() {
 function SessionPills({ clock, setsDone, setsTotal, volume }: { clock: string; setsDone: number; setsTotal: number; volume: number }) {
   return (
     <div className="flex flex-wrap items-center gap-2.5">
-      <Pill>
-        <Icon name="clock" size={14} />
-        {clock}
-      </Pill>
+      <div className="flex items-center gap-1">
+        <Pill>
+          <Icon name="clock" size={14} />
+          {clock}
+        </Pill>
+        <InfoTip topicId="workout-timer" size={14} />
+      </div>
       <Pill>
         {setsDone} of {setsTotal} sets
       </Pill>
-      <Pill>
-        <NumberStat value={volume} suffix=" kg volume" />
-      </Pill>
+      <div className="flex items-center gap-1">
+        <Pill>
+          <NumberStat value={volume} suffix=" kg volume" />
+        </Pill>
+        <InfoTip topicId="volume-stat" size={14} example={`Current workout volume: ${volume} kg`} />
+      </div>
     </div>
   );
 }
@@ -451,7 +467,10 @@ function SetRow({
       )}
     >
       <div className="md:w-[84px]">
-        <p className="text-[14px] font-semibold text-fg">Set {n}</p>
+        <div className="flex items-center gap-1">
+          <p className="text-[14px] font-semibold text-fg">Set {n}</p>
+          <InfoTip topicId="set-row-tracking" size={13} />
+        </div>
         <p className="mt-0.5 text-[12px] text-muted">Plan {planKg ? `${planKg} kg` : 'bodyweight'}</p>
       </div>
       <button

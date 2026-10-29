@@ -3,6 +3,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { MobileTabBar } from '@/components/layout/MobileTabBar';
 import { MobileTopBar } from '@/components/layout/MobileTopBar';
 import { PageTransition } from '@/components/layout/PageTransition';
+import { CoachmarkTour } from '@/components/features/help/CoachmarkTour';
 
 export interface AppShellProps {
   children: ReactNode;
@@ -25,6 +26,7 @@ export function AppShell({ children }: AppShellProps) {
         </main>
       </div>
       <MobileTabBar />
+      <CoachmarkTour />
     </div>
   );
 }

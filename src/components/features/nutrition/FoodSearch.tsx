@@ -13,6 +13,7 @@ import { Chip, EmptyState, StepButton, SuccessCheck } from '@/components/ui/misc
 import { PageContainer, Stack } from '@/components/ui/Layout';
 import { showToast } from '@/components/ui/Toast';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { InfoTip } from '@/components/ui/InfoTip';
 import { DEFAULT_FOOD_ID, FOOD_CATEGORIES, FOODS } from '@/lib/data/foods';
 import { MEAL_KEYS, MEAL_NAME, num } from '@/lib/format';
 import { totals } from '@/lib/selectors';
@@ -297,7 +298,10 @@ export function FoodSearch() {
                       <h2 className="mt-1 text-[24px] font-bold md:text-[26px]">{food.name}</h2>
                     </div>
                     <div>
-                      <p className="mb-2 text-[13px] font-medium text-muted">Serving size</p>
+                      <div className="mb-2 flex items-center gap-1.5">
+                        <p className="text-[13px] font-medium text-muted">Serving size</p>
+                        <InfoTip topicId="search-serving" />
+                      </div>
                       <div className="flex flex-wrap gap-2.5" role="group" aria-label="Serving size">
                         {servings.map((x, i) => (
                           <Chip key={x.label} on={svIdx === i} onClick={() => setSvIdx(i)}>
@@ -307,7 +311,10 @@ export function FoodSearch() {
                       </div>
                     </div>
                     <div className="flex items-center justify-between gap-3">
-                      <p className="text-[13px] font-medium text-muted">Number of servings</p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-[13px] font-medium text-muted">Number of servings</p>
+                        <InfoTip topicId="search-servings-count" />
+                      </div>
                       <div className="flex items-center gap-3">
                         <StepButton label="Fewer servings" onClick={() => setQty((v) => Math.max(QTY_MIN, v - QTY_STEP))}>
                           −
@@ -349,17 +356,20 @@ export function FoodSearch() {
 
                 {food && (
                   <>
-                    <p className="rounded-[14px] border border-violet-line bg-violet-deep px-4 py-3.5 text-[14px] leading-[1.55] text-violet-text">
-                      After adding:{' '}
-                      <strong>
-                        {num(nk)} / {num(tg.kcal)} kcal
-                      </strong>{' '}
-                      ·{' '}
-                      <strong>
-                        {np} / {tg.protein} g protein
-                      </strong>
-                      . {afterNote}
-                    </p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="flex-1 rounded-[14px] border border-violet-line bg-violet-deep px-4 py-3.5 text-[14px] leading-[1.55] text-violet-text">
+                        After adding:{' '}
+                        <strong>
+                          {num(nk)} / {num(tg.kcal)} kcal
+                        </strong>{' '}
+                        ·{' '}
+                        <strong>
+                          {np} / {tg.protein} g protein
+                        </strong>
+                        . {afterNote}
+                      </p>
+                      <InfoTip topicId="after-adding-preview" />
+                    </div>
                     <Button size="xl" className="text-[16px]" onClick={addSelected} data-testid="add-selected-food-button">
                       Add to {MEAL_NAME[meal]}
                     </Button>
@@ -372,7 +382,10 @@ export function FoodSearch() {
           {tab === 'custom' && (
             <form onSubmit={addCustom} noValidate className={cardClass('default', 'flex max-w-[640px] min-w-0 flex-col gap-4 col-span-full')}>
               <div>
-                <h2 className="text-[22px] font-bold md:text-[24px]">Custom food</h2>
+                <div className="flex items-center gap-1.5">
+                  <h2 className="text-[22px] font-bold md:text-[24px]">Custom food</h2>
+                  <InfoTip topicId="custom-food" />
+                </div>
                 <p className="mt-1 text-[15px] text-muted">For homemade meals or foods that aren&apos;t in the search results.</p>
               </div>
               <div className="flex flex-col gap-4">
@@ -445,7 +458,10 @@ export function FoodSearch() {
           {food && (
             <div className="flex flex-col gap-4">
               <div>
-                <p className="mb-2 text-[13px] font-medium text-muted">Serving size</p>
+                <div className="mb-2 flex items-center gap-1.5">
+                  <p className="text-[13px] font-medium text-muted">Serving size</p>
+                  <InfoTip topicId="search-serving" />
+                </div>
                 <div className="flex flex-wrap gap-2.5" role="group" aria-label="Serving size">
                   {servings.map((x, i) => (
                     <Chip key={x.label} on={svIdx === i} onClick={() => setSvIdx(i)}>
@@ -456,7 +472,10 @@ export function FoodSearch() {
               </div>
 
               <div>
-                <p className="mb-2 text-[13px] font-medium text-muted">Number of servings</p>
+                <div className="mb-2 flex items-center gap-1.5">
+                  <p className="text-[13px] font-medium text-muted">Number of servings</p>
+                  <InfoTip topicId="search-servings-count" />
+                </div>
                 <div className="flex items-center gap-3">
                   <StepButton onClick={() => setQty((q) => Math.max(QTY_MIN, +(q - QTY_STEP).toFixed(1)))} label="Decrease quantity">
                     −

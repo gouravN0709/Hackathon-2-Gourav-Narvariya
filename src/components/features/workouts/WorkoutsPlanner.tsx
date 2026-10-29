@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/Card';
 import { Field, Label } from '@/components/ui/Field';
 import { Icon } from '@/components/ui/Icon';
 import { Pill } from '@/components/ui/Pill';
+import { InfoTip } from '@/components/ui/InfoTip';
 import { EmptyState, Eyebrow, NovaAvatar } from '@/components/ui/misc';
 import { PageContainer, Stack } from '@/components/ui/Layout';
 import { MUSCLE_GROUPS } from '@/lib/data/workouts';
@@ -79,7 +80,10 @@ export function WorkoutsPlanner() {
         <Card tone="ai" as="section" className="flex flex-wrap items-center gap-5" aria-label="AI-generated plan">
           <NovaAvatar size={48} iconSize={24} />
           <div className="min-w-0 flex-[1_1_360px]">
-            <Eyebrow tone="violet">AI-generated plan</Eyebrow>
+            <div className="flex items-center gap-1.5">
+              <Eyebrow tone="violet">AI-generated plan</Eyebrow>
+              <InfoTip topicId="ai-plan" />
+            </div>
             <h2 className="mt-1 text-[20px] font-bold md:text-[22px]">4-day split · Week 6 of 12</h2>
             <p className="mt-1.5 text-[15px] leading-normal text-muted">
               Built by Nova from your {GOAL_NAME[s.user.goal].toLowerCase()} goal, 4 training days and last week&apos;s lifts. Bench
@@ -99,24 +103,30 @@ export function WorkoutsPlanner() {
           </div>
         </Card>
 
-        <section
-          aria-label="Weekly calendar"
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 select-none"
-        >
-          {days.map((d) => (
-            <DayChip
-              key={d.date}
-              day={d}
-              on={d.i === selIdx}
-              onPick={() => {
-                playTick();
-                setUI({ workoutDay: d.i });
-              }}
-            />
-          ))}
-        </section>
+        <div>
+          <div className="mb-2 flex items-center gap-1.5">
+            <h2 className="text-[14px] font-semibold text-muted">Weekly schedule</h2>
+            <InfoTip topicId="calendar-statuses" />
+          </div>
+          <section
+            aria-label="Weekly calendar"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 select-none"
+          >
+            {days.map((d) => (
+              <DayChip
+                key={d.date}
+                day={d}
+                on={d.i === selIdx}
+                onPick={() => {
+                  playTick();
+                  setUI({ workoutDay: d.i });
+                }}
+              />
+            ))}
+          </section>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
           <SelectedDay day={sel} exercises={sel.workout ? workoutExercises(s, sel.workout.key) : []} />
@@ -229,7 +239,10 @@ function MuscleGroups({ days, extras }: { days: WeekDay[]; extras: Record<string
   return (
     <Card>
       <div className="mb-4">
-        <h3 className="text-[19px] font-bold">Muscle groups</h3>
+        <div className="flex items-center gap-1.5">
+          <h3 className="text-[19px] font-bold">Muscle groups</h3>
+          <InfoTip topicId="muscle-groups" />
+        </div>
         <p className="mt-1 text-[14px] text-muted">Tap a muscle to see where it appears in your week.</p>
       </div>
       <div className="flex flex-col gap-2">
@@ -295,7 +308,10 @@ function Routines() {
 
   return (
     <Card tone="violet">
-      <Eyebrow tone="violet">My routines</Eyebrow>
+      <div className="flex items-center gap-1.5">
+        <Eyebrow tone="violet">My routines</Eyebrow>
+        <InfoTip topicId="custom-routines" />
+      </div>
       {routines.length === 0 ? (
         <p className="mt-2 text-[15px] leading-[1.55] text-violet-text">
           No custom routines yet. Start one from scratch and add exercises to it.

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Icon, type IconName } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
 import { playTick } from '@/lib/audio';
+import { startAppTour } from '@/components/features/help/useTour';
 
 interface ActionItem {
   id: string;
@@ -102,6 +103,25 @@ export function CommandPalette() {
       icon: 'user',
       category: 'Navigation',
       action: () => router.push('/profile'),
+    },
+    {
+      id: 'help',
+      title: 'Help & Guides (Help Center)',
+      subtitle: 'Search metric definitions, formulas, glossary & FAQs',
+      icon: 'help',
+      category: 'Navigation',
+      action: () => router.push('/help'),
+    },
+    {
+      id: 'tour',
+      title: 'Take Quick Tour',
+      subtitle: '5-step guided coachmark walkthrough of the app',
+      icon: 'sparkle',
+      category: 'Quick Actions',
+      action: () => {
+        setOpen(false);
+        startAppTour();
+      },
     },
   ];
 

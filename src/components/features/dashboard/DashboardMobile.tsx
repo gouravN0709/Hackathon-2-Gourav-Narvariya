@@ -10,6 +10,7 @@ import type { DashboardData } from '@/components/features/dashboard/useDashboard
 import { LinkButton } from '@/components/ui/Button';
 import { Card, cardClass } from '@/components/ui/Card';
 import { Icon, PlayIcon } from '@/components/ui/Icon';
+import { InfoTip } from '@/components/ui/InfoTip';
 import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Ring } from '@/components/ui/Ring';
@@ -38,6 +39,15 @@ export function DashboardMobile({ d }: { d: DashboardData }) {
         </div>
         <div className="flex items-center gap-2.5">
           <OfflineIndicator />
+          <Link
+            href="/help"
+            aria-label="Help & guides"
+            title="Help & guides"
+            data-testid="mobile-header-help-button"
+            className="flex h-[46px] w-[46px] flex-none items-center justify-center rounded-full border border-line bg-card text-muted hover:text-fg"
+          >
+            <Icon name="help" size={20} />
+          </Link>
           <Link
             href="/profile"
             aria-label="Open profile and settings"
@@ -77,42 +87,88 @@ export function DashboardMobile({ d }: { d: DashboardData }) {
         </div>
       )}
 
-      <section aria-label="Daily summary" className="flex flex-wrap gap-3">
-        <Link href="/nutrition" data-testid="dashboard-calories-card" className={cardClass('default', 'flex flex-[1_1_150px] items-center gap-3 text-fg')}>
-          <Ring size={60} radius={25} stroke={7} value={d.calPct} label={`Calories ${d.calPct} percent`}>
-            <span className="font-display text-[13px] font-bold">
-              <NumberStat value={d.calPct} suffix="%" />
-            </span>
-          </Ring>
-          <div>
-            <p className="text-[12px] font-medium text-muted">Calories</p>
-            <p className="font-display text-[20px] font-bold">
-              <NumberStat value={d.rawKcal} />
-            </p>
-            <p className="text-[12px] text-muted">of {d.kcalTarget}</p>
+      <section aria-label="Daily summary" data-tour="dashboard-summary" className="flex flex-wrap gap-3">
+        <div data-testid="dashboard-calories-card" className={cardClass('default', 'flex flex-[1_1_150px] items-center gap-3 text-fg')}>
+          <Link href="/nutrition" aria-label="View nutrition" className="flex-none">
+            <Ring size={60} radius={25} stroke={7} value={d.calPct} label={`Calories ${d.calPct} percent`}>
+              <span className="font-display text-[13px] font-bold">
+                <NumberStat value={d.calPct} suffix="%" />
+              </span>
+            </Ring>
+          </Link>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1">
+              <Link href="/nutrition" className="text-[12px] font-medium text-muted hover:text-fg">
+                Calories
+              </Link>
+              <InfoTip topicId="calories-ring" size={14} example={`You have ${d.kcalLeft} left today`} />
+            </div>
+            <Link href="/nutrition" className="block">
+              <p className="font-display text-[20px] font-bold">
+                <NumberStat value={d.rawKcal} />
+              </p>
+              <p className="text-[12px] text-muted">of {d.kcalTarget}</p>
+            </Link>
           </div>
-        </Link>
-        <Link href="/nutrition" data-testid="dashboard-protein-card" className={cardClass('default', 'flex flex-[1_1_150px] flex-col justify-center gap-2 text-fg')}>
-          <p className="text-[12px] font-medium text-muted">Protein</p>
-          <p className="font-display text-[20px] font-bold">
-            <NumberStat value={d.rawProtein} /> <span className="font-sans text-[13px] font-medium text-muted">/ {d.proteinTarget} g</span>
-          </p>
-          <ProgressBar value={d.protPct} color="violet" label={`Protein ${d.protPct} percent`} />
-        </Link>
-        <Link href="/workouts" data-testid="dashboard-workout-card" className={cardClass('default', 'flex flex-[1_1_150px] flex-col gap-1.5 text-fg')}>
-          <p className="text-[12px] font-medium text-muted">Workout</p>
-          <p className="font-display text-[16px] font-bold">{d.wName}</p>
-          <Pill tone="lime" size="sm" className="w-fit">
-            {d.done ? 'Completed' : d.isRest ? 'Rest day' : 'Planned · 6:30 PM'}
-          </Pill>
-        </Link>
-        <Link href="/progress" data-testid="dashboard-weight-card" className={cardClass('default', 'flex flex-[1_1_150px] flex-col gap-2 text-fg')}>
-          <p className="text-[12px] font-medium text-muted">Weight</p>
-          <p className="font-display text-[20px] font-bold">
-            <NumberStat value={d.rawWeight} decimals={1} /> <span className="font-sans text-[13px] font-medium text-muted">kg</span>
-          </p>
-          <ProgressBar value={d.goalPct} label={`Goal ${d.goalPct} percent`} />
-        </Link>
+        </div>
+
+        <div data-testid="dashboard-protein-card" className={cardClass('default', 'flex flex-[1_1_150px] flex-col justify-center gap-2 text-fg')}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <Link href="/nutrition" className="text-[12px] font-medium text-muted hover:text-fg">
+                Protein
+              </Link>
+              <InfoTip topicId="protein-target" size={14} example={`${d.rawProtein} / ${d.proteinTarget} g logged today`} />
+            </div>
+            <Pill tone="violet" size="sm">{d.protPct}%</Pill>
+          </div>
+          <Link href="/nutrition" className="block">
+            <p className="font-display text-[20px] font-bold">
+              <NumberStat value={d.rawProtein} /> <span className="font-sans text-[13px] font-medium text-muted">/ {d.proteinTarget} g</span>
+            </p>
+            <div className="mt-2">
+              <ProgressBar value={d.protPct} color="violet" label={`Protein ${d.protPct} percent`} />
+            </div>
+          </Link>
+        </div>
+
+        <div data-testid="dashboard-workout-card" className={cardClass('default', 'flex flex-[1_1_150px] flex-col gap-1.5 text-fg')}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <Link href="/workouts" className="text-[12px] font-medium text-muted hover:text-fg">
+                Workout
+              </Link>
+              <InfoTip topicId="workout-status" size={14} />
+            </div>
+            <Pill tone="lime" size="sm" className="w-fit">
+              {d.done ? 'Done' : d.isRest ? 'Rest' : 'Today'}
+            </Pill>
+          </div>
+          <Link href="/workouts" className="block">
+            <p className="font-display text-[16px] font-bold">{d.wName}</p>
+            <p className="mt-0.5 text-[12px] text-muted">{d.wSub}</p>
+          </Link>
+        </div>
+
+        <div data-testid="dashboard-weight-card" className={cardClass('default', 'flex flex-[1_1_150px] flex-col gap-2 text-fg')}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <Link href="/progress" className="text-[12px] font-medium text-muted hover:text-fg">
+                Weight
+              </Link>
+              <InfoTip topicId="goal-progress" size={14} example={`${d.rawWeight.toFixed(1)} kg (${d.goalPct}% towards ${d.goalWeight} kg)`} />
+            </div>
+            <Pill size="sm">{d.wDelta}</Pill>
+          </div>
+          <Link href="/progress" className="block">
+            <p className="font-display text-[20px] font-bold">
+              <NumberStat value={d.rawWeight} decimals={1} /> <span className="font-sans text-[13px] font-medium text-muted">kg</span>
+            </p>
+            <div className="mt-2">
+              <ProgressBar value={d.goalPct} label={`Goal ${d.goalPct} percent`} />
+            </div>
+          </Link>
+        </div>
       </section>
 
       <Card className="flex flex-col gap-3.5 p-[18px]">
@@ -153,7 +209,10 @@ export function DashboardMobile({ d }: { d: DashboardData }) {
       <Card tone="ai" className="flex flex-col gap-3 p-[18px]">
         <div className="flex items-center gap-2.5">
           <NovaAvatar size={34} iconSize={18} strokeWidth={2.2} />
-          <h3 className="text-[17px] font-bold">Your AI Coach</h3>
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-[17px] font-bold">Your AI Coach</h3>
+            <InfoTip topicId="coach-card" />
+          </div>
         </div>
         <p className="text-[15px] leading-[1.55]">{d.coachText}</p>
         <LinkButton href="/coach" className="w-full">
@@ -165,7 +224,10 @@ export function DashboardMobile({ d }: { d: DashboardData }) {
 
       <Card className="flex flex-col gap-3 p-[18px]">
         <div className="flex items-center justify-between">
-          <h3 className="text-[17px] font-bold">Weight trend</h3>
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-[17px] font-bold">Weight trend</h3>
+            <InfoTip topicId="weight-trend" />
+          </div>
           <Pill size="sm">{d.wDelta} / 30d</Pill>
         </div>
         <WeightChart series={series} box={SPARK_BOX} variant="compact" label="Weight trend over 30 days" />
@@ -173,7 +235,10 @@ export function DashboardMobile({ d }: { d: DashboardData }) {
 
       <Card className="flex flex-col gap-3 p-[18px]">
         <div className="flex items-center justify-between">
-          <h3 className="text-[17px] font-bold">Nutrition</h3>
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-[17px] font-bold">Nutrition</h3>
+            <InfoTip topicId="nutrition-card" />
+          </div>
           <Pill size="sm">{d.kcalLeft} kcal left</Pill>
         </div>
         <MacroSplitBar split={d.split} />

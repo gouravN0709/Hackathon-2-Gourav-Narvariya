@@ -29,6 +29,15 @@ export function MobileTopBar() {
           <Icon name="search" size={18} />
         </button>
         <Link
+          href="/help"
+          aria-label="Help & guides"
+          title="Help & guides"
+          data-testid="mobile-topbar-help"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-card text-muted hover:text-fg"
+        >
+          <Icon name="help" size={18} />
+        </Link>
+        <Link
           href="/profile"
           aria-label="Open profile and settings"
           className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-lime bg-active font-display text-[17px] font-bold text-lime"

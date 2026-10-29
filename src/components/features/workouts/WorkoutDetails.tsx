@@ -5,6 +5,7 @@ import { BackLink } from '@/components/layout/PageHeader';
 import { Button, LinkButton } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Icon, PlayIcon } from '@/components/ui/Icon';
+import { InfoTip } from '@/components/ui/InfoTip';
 import { Pill } from '@/components/ui/Pill';
 import { EmptyState, Eyebrow, ExercisePlaceholder } from '@/components/ui/misc';
 import { PageContainer, Stack } from '@/components/ui/Layout';
@@ -106,7 +107,10 @@ export function WorkoutDetails() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
           <div className="flex min-w-0 flex-col gap-4">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-[22px] font-bold">Exercises</h2>
+              <div className="flex items-center gap-1.5">
+                <h2 className="text-[22px] font-bold">Exercises</h2>
+                <InfoTip topicId="sets-reps-weight-rest" />
+              </div>
               {w && (
                 <Button variant="ghost" size="sm" onClick={() => setPicker((v) => !v)} aria-expanded={picker} data-testid="add-exercise-button">
                   {picker ? 'Close' : '+ Add Exercise'}
@@ -199,7 +203,10 @@ export function WorkoutDetails() {
 
           <aside className="flex min-w-0 flex-col gap-6">
             <Card>
-              <h3 className="text-[19px] font-bold">Session estimate</h3>
+              <div className="flex items-center gap-1.5">
+                <h3 className="text-[19px] font-bold">Session estimate</h3>
+                <InfoTip topicId="session-estimate" example={`Planned volume: ${num(volume)} kg`} />
+              </div>
               <dl className="mt-3 flex flex-col">
                 {[
                   ['Planned volume', `${num(volume)} kg`],
@@ -214,7 +221,10 @@ export function WorkoutDetails() {
               </dl>
             </Card>
             <Card tone="ai">
-              <Eyebrow tone="violet">Notes from Nova</Eyebrow>
+              <div className="flex items-center gap-1.5">
+                <Eyebrow tone="violet">Notes from Nova</Eyebrow>
+                <InfoTip topicId="nova-notes" />
+              </div>
               <p className="mt-2.5 text-[15px] leading-[1.6]">
                 {w ? NOVA_NOTES[w.key] : 'Rest and recover. Nova will adjust the plan if you skip a day.'}
               </p>

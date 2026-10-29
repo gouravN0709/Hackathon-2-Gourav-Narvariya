@@ -14,12 +14,14 @@ import { ToggleRow } from '@/components/ui/Toggle';
 import { Chip } from '@/components/ui/misc';
 import { FeedbackModal } from '@/components/ui/FeedbackModal';
 import { Icon } from '@/components/ui/Icon';
+import { InfoTip } from '@/components/ui/InfoTip';
 import { PageContainer, Stack } from '@/components/ui/Layout';
 import { DIETS, EXPERIENCES, PROFILE_GOALS } from '@/lib/data/options';
 import { calcTargets, latestWeight } from '@/lib/selectors';
 import { useFitData, useFitStore } from '@/lib/store';
 import { usePWA } from '@/lib/pwa/usePWA';
 import { showToast } from '@/components/ui/Toast';
+import { startAppTour } from '@/components/features/help/useTour';
 import type { NotificationPrefs, User } from '@/types/domain';
 
 const NOTIFICATIONS: { k: keyof NotificationPrefs; title: string; desc: string }[] = [
@@ -231,7 +233,7 @@ export function ProfileSettings() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
           <Stack gap={24}>
-            <Section title="Fitness goal" subtitle="Nova builds your plan and targets around this.">
+            <Section title="Fitness goal" subtitle="Nova builds your plan and targets around this." infoTopicId="profile-goal">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3" role="group" aria-label="Fitness goal">
                 {PROFILE_GOALS.map((o) => {
                   const on = d.goal === o.id;
@@ -268,7 +270,10 @@ export function ProfileSettings() {
             <Section title="Training & diet">
               <div className="flex flex-col gap-4">
                 <div>
-                  <p className="mb-2.5 text-[13px] font-medium text-muted">Experience</p>
+                  <div className="mb-2.5 flex items-center gap-1.5">
+                    <p className="text-[13px] font-medium text-muted">Experience</p>
+                    <InfoTip topicId="profile-experience" />
+                  </div>
                   <div className="flex flex-wrap gap-2.5" role="group" aria-label="Experience">
                     {EXPERIENCES.map((o) => (
                       <Chip key={o.id} on={d.exp === o.id} onClick={() => edit({ exp: o.id })} className="h-11 px-[18px]">
@@ -278,7 +283,10 @@ export function ProfileSettings() {
                   </div>
                 </div>
                 <div>
-                  <p className="mb-2.5 text-[13px] font-medium text-muted">Dietary preference</p>
+                  <div className="mb-2.5 flex items-center gap-1.5">
+                    <p className="text-[13px] font-medium text-muted">Dietary preference</p>
+                    <InfoTip topicId="profile-diet" />
+                  </div>
                   <div className="flex flex-wrap gap-2.5" role="group" aria-label="Dietary preference">
                     {DIETS.map((o) => (
                       <Chip key={o.id} on={d.diet === o.id} onClick={() => edit({ diet: o.id })} className="h-11 px-[18px]">
@@ -294,6 +302,7 @@ export function ProfileSettings() {
             <Section
               title="Daily targets"
               subtitle="Used on your dashboard, Nutrition and Nova's advice."
+              infoTopicId="daily-targets-recalc"
               action={
                 <Button variant="ghost" size="sm" onClick={recalc} data-testid="profile-recalc-button">
                   Recalculate with Nova
@@ -443,7 +452,10 @@ export function ProfileSettings() {
 
             <Card as="section" className="flex flex-col gap-4">
               <div>
-                <h2 className="text-[20px] font-bold">Notifications</h2>
+                <div className="flex items-center gap-1.5">
+                  <h2 className="text-[20px] font-bold">Notifications</h2>
+                  <InfoTip topicId="profile-notifications" />
+                </div>
                 <p className="mt-1 text-[14px] text-muted">Choose what Nova alerts you about.</p>
               </div>
               <div className="flex flex-col gap-2.5">
@@ -459,23 +471,49 @@ export function ProfileSettings() {
               </div>
             </Card>
 
+            <Card as="section" className="flex flex-col gap-4" data-testid="profile-help-card">
+              <div>
+                <h2 className="text-[20px] font-bold">Help &amp; guide</h2>
+                <p className="mt-1 text-[14px] text-muted">Guides, glossary, metric formulas, and tour.</p>
+              </div>
+              <div className="flex flex-col gap-2.5">
+                <LinkButton href="/help" variant="ghost" className="justify-start gap-2.5">
+                  <Icon name="help" size={18} />
+                  Open Help Center
+                </LinkButton>
+                <Button
+                  variant="ghost"
+                  onClick={startAppTour}
+                  data-testid="profile-restart-tour-button"
+                  className="justify-start gap-2.5"
+                >
+                  <Icon name="sparkle" size={18} />
+                  Restart app tour
+                </Button>
+              </div>
+            </Card>
+
             <Card as="section" className="flex flex-col gap-4">
               <h2 className="text-[20px] font-bold">Session</h2>
               <div className="flex flex-col gap-2.5">
                 <Button variant="ghost" onClick={logOut} data-testid="profile-logout-button">
                   Log out
                 </Button>
-                <Button
-                  variant="danger"
-                  aria-expanded={delOpen}
-                  data-testid="profile-delete-open-button"
-                  onClick={() => {
-                    setDelOpen((v) => !v);
-                    setDelText('');
-                  }}
-                >
-                  Delete account
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="danger"
+                    aria-expanded={delOpen}
+                    data-testid="profile-delete-open-button"
+                    onClick={() => {
+                      setDelOpen((v) => !v);
+                      setDelText('');
+                    }}
+                    className="flex-1"
+                  >
+                    Delete account
+                  </Button>
+                  <InfoTip topicId="delete-account" />
+                </div>
               </div>
               {delOpen && (
                 <div className="flex flex-col gap-3 rounded-[14px] border border-danger-border bg-danger-deep p-4">
@@ -526,12 +564,27 @@ export function ProfileSettings() {
   );
 }
 
-function Section({ title, subtitle, action, children }: { title: string; subtitle?: string; action?: ReactNode; children: ReactNode }) {
+function Section({
+  title,
+  subtitle,
+  action,
+  infoTopicId,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  action?: ReactNode;
+  infoTopicId?: string;
+  children: ReactNode;
+}) {
   return (
     <Card as="section" className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-[20px] font-bold">{title}</h2>
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-[20px] font-bold">{title}</h2>
+            {infoTopicId && <InfoTip topicId={infoTopicId} />}
+          </div>
           {subtitle && <p className="mt-1 text-[14px] text-muted">{subtitle}</p>}
         </div>
         {action}

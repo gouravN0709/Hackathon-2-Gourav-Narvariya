@@ -19,3 +19,4 @@ export function OfflineIndicator({ className = '' }: { className?: string }) {
     </span>
   );
 }
+
