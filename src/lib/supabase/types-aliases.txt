@@ -1,0 +1,19 @@
+/* Appended to the CLI output of `supabase gen types typescript --local` by the
+   `db:types` script — keep this file in sync with the alias block in types.ts. */
+
+/* ─────────────────── row aliases (keep call-sites terse) ─────────────────── */
+
+export type TablesOf<K extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][K]['Row'];
+
+export type ProfileRow = TablesOf<'profiles'>;
+export type WeightLogRow = TablesOf<'weight_logs'>;
+export type PlanRow = TablesOf<'user_plan'>;
+export type ExtraRow = TablesOf<'workout_extras'>;
+export type RoutineRow = TablesOf<'custom_routines'>;
+export type SessionRow = TablesOf<'workout_sessions'>;
+export type SessionSetRow = TablesOf<'session_sets'>;
+export type MealEntryRow = TablesOf<'meal_entries'>;
+export type CustomFoodRow = TablesOf<'custom_foods'>;
+export type ChatRow = TablesOf<'chat_messages'>;
+export type LiftHistoryRow = Database['public']['Views']['lift_history']['Row'];

@@ -226,10 +226,14 @@ class PWAManager {
         });
 
       let refreshing = false;
+      // Only the first visit of a session installs a controller; that must not
+      // reload the page (it would wipe in-flight form state). We reload only
+      // when a NEW service worker replaces an already-active one.
+      const hadController = Boolean(navigator.serviceWorker.controller);
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (!refreshing) {
           refreshing = true;
-          window.location.reload();
+          if (hadController) window.location.reload();
         }
       });
     };

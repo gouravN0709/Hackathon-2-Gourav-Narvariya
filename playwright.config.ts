@@ -2,10 +2,12 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests/e2e',
+  globalSetup: './tests/e2e/global-setup.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // 1 worker: every test mutates the same demo account on the shared local Supabase.
+  workers: 1,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
@@ -59,5 +61,10 @@ export default defineConfig({
     url: 'http://127.0.0.1:3333',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
+    env: {
+      // Frozen demo clock: every assertion in tests/e2e is written around this date.
+      NEXT_PUBLIC_TODAY: '2026-10-15',
+      NEXT_PUBLIC_REQUIRE_EMAIL_CONFIRMATION: 'false',
+    },
   },
 });

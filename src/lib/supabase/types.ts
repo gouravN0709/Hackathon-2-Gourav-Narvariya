@@ -430,6 +430,8 @@ export const Constants = {
           }
         }
 } as const
+/* Appended to the CLI output of `supabase gen types typescript --local` by the
+   `db:types` script — keep this file in sync with the alias block in types.ts. */
 
 /* ─────────────────── row aliases (keep call-sites terse) ─────────────────── */
 
